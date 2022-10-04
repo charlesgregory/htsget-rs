@@ -59,10 +59,13 @@ pub fn run_server<H: HtsGet + Clone + Send + Sync + 'static>(
   addr: SocketAddr,
 ) -> std::io::Result<Server> {
   let server = HttpServer::new(Box::new(move || {
+    use actix_cors::Cors;
+    let cors = Cors::default().allow_any_origin();
     App::new()
       .configure(|service_config: &mut web::ServiceConfig| {
         configure_server(service_config, htsget.clone(), config_service_info.clone());
       })
+      .wrap(cors)
       .wrap(TracingLogger::default())
   }))
   .bind(addr)?;

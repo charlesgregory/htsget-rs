@@ -24,6 +24,7 @@ use tokio_rustls::rustls::{Certificate, PrivateKey, ServerConfig};
 use tokio_rustls::TlsAcceptor;
 use tower::MakeService;
 use tower_http::trace::TraceLayer;
+use tower_http::cors::CorsLayer;
 use tracing::instrument;
 use tracing::{info, trace};
 
@@ -145,8 +146,9 @@ impl TicketServer {
   #[instrument(level = "trace", skip_all)]
   pub async fn serve<P: AsRef<Path>>(mut self, path: P) -> Result<()> {
     let mut app = Router::new()
-      .layer(TraceLayer::new_for_http())
       .merge(SpaRouter::new(&self.serve_assets_at, path))
+      .layer(TraceLayer::new_for_http())
+      .layer(CorsLayer::very_permissive())
       .into_make_service_with_connect_info::<SocketAddr>();
 
     match self.cert_key_pair {
