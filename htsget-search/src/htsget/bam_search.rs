@@ -51,10 +51,10 @@ where
   S: Storage<Streamable = ReaderType> + Send + Sync + 'static,
   ReaderType: AsyncRead + Unpin + Send + Sync,
 {
-  type ReferenceSequenceHeader = sam::header::ReferenceSequence;
+  type ReferenceSequenceHeader = sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>;
 
   fn max_seq_position(ref_seq: &Self::ReferenceSequenceHeader) -> usize {
-    ref_seq.len().get()
+    ref_seq.length().get()
   }
 
   #[instrument(level = "trace", skip(self, index))]
@@ -143,7 +143,7 @@ where
     &self,
     header: &'a Header,
     name: &str,
-  ) -> Option<(usize, &'a String, &'a sam::header::ReferenceSequence)> {
+  ) -> Option<(usize, &'a String, &'a sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>)> {
     header.reference_sequences().get_full(name)
   }
 
@@ -159,7 +159,7 @@ where
 
   async fn get_byte_ranges_for_reference_sequence(
     &self,
-    ref_seq: &sam::header::ReferenceSequence,
+    ref_seq: &sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>,
     ref_seq_id: usize,
     query: Query,
     index: &Index,

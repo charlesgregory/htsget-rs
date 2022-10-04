@@ -92,7 +92,7 @@ where
     &self,
     header: &'a Header,
     name: &str,
-  ) -> Option<(usize, &'a String, &'a sam::header::ReferenceSequence)> {
+  ) -> Option<(usize, &'a String, &'a sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>)> {
     header.reference_sequences().get_full(name)
   }
 
@@ -115,7 +115,7 @@ where
 
   async fn get_byte_ranges_for_reference_sequence(
     &self,
-    ref_seq: &sam::header::ReferenceSequence,
+    ref_seq: &sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>,
     ref_seq_id: usize,
     query: Query,
     index: &Index,
@@ -192,7 +192,7 @@ where
     id: &str,
     format: &Format,
     interval: &Interval,
-    ref_seq: Option<&sam::header::ReferenceSequence>,
+    ref_seq: Option<&sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>>,
     crai_index: &[Record],
     predicate: Arc<F>,
   ) -> Result<Vec<BytesPosition>>
@@ -258,7 +258,7 @@ where
 
   /// Gets bytes ranges for a specific index entry.
   pub(crate) fn bytes_ranges_for_record(
-    ref_seq: Option<&sam::header::ReferenceSequence>,
+    ref_seq: Option<&sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>>,
     seq_range: Interval,
     record: &Record,
     next: u64,
@@ -278,7 +278,7 @@ where
             HtsGetError::invalid_input("adding record alignment span to `Position`")
           })?;
 
-        let interval = seq_range.into_one_based(|| ref_seq.len().get())?.into();
+        let interval = seq_range.into_one_based(|| ref_seq.length().get())?.into();
         let seq_start = interval.start().unwrap_or(Position::MIN);
         let seq_end = interval.end().unwrap_or(Position::MAX);
 

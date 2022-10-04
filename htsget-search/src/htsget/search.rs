@@ -119,7 +119,7 @@ where
     &self,
     header: &'b Header,
     name: &str,
-  ) -> Option<(usize, &'b String, &'b sam::header::ReferenceSequence)>;
+  ) -> Option<(usize, &'b String, &'b sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>)>;
 
   /// Get unplaced unmapped ranges.
   async fn get_byte_ranges_for_unmapped_reads(
@@ -131,7 +131,7 @@ where
   /// Get reads ranges for a reference sequence implementation.
   async fn get_byte_ranges_for_reference_sequence(
     &self,
-    reference_sequence: &sam::header::ReferenceSequence,
+    reference_sequence: &sam::header::record::value::map::Map<sam::header::record::value::map::ReferenceSequence>,
     ref_seq_id: usize,
     query: Query,
     index: &Index,
